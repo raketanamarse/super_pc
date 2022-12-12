@@ -4,7 +4,7 @@ project(super_pc VERSION 0.1.0)
 include(CTest)
 enable_testing()
 
-add_executable(super_pc main.cpp)
+add_executable(super_pc main.cpp F.hpp L.hpp vars.hpp)
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
