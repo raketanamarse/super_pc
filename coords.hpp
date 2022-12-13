@@ -3,15 +3,22 @@
 
 //функции для рассчета координат x y z при заданном n
 
-const double NY_NX = NY * NX; //
+const unsigned NY_NX = NY * NX; 
 
 
-void Count_XYZ(int i, int* arr){
+void Count_XYZ(unsigned n, int* arr){
     
-    arr[2] = i / NY_NX;
-    arr[1] = (i - arr[2] * NY_NX) / NX;
-    arr[0] = i - arr[2] * NY_NX - arr[1] * NX; 
+    arr[2] = n / NY_NX;
+    arr[1] = (n - arr[2] * NY_NX) / NX;
+    arr[0] = n - arr[2] * NY_NX - arr[1] * NX; 
     return;
+}
+
+//функция для рассчета координат n при заданном x y z
+
+unsigned Count_n(unsigned x, unsigned y, unsigned z){
+    
+    return z * NY_NX + y * NX + x;
 }
 
 
