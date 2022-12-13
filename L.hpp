@@ -6,15 +6,15 @@ const double HX_2 = HX * HX, HY_2 = HY * HY, HZ_2 = HZ * HZ; //Значение 
 
 double LX(double left_value, double value, double right_value){
 
-    return (left_value - 2 * value + right_value) / HX_2; // ??? можно реализовать умножение на 2 через битовую операци, будет быстре
-}
+    return (left_value - 2 * value + right_value) / HX_2;
+}   
 
 double LY(double left_value, double value, double right_value){
 
-    return (left_value - 2 * value + right_value) / HY_2; // ??? можно реализовать умножение на 2 через битовую операци, будет быстре
+    return (left_value - 2 * value + right_value) / HY_2;
 }
 
 double LZ(double left_value, double value, double right_value){
 
-    return (left_value - 2 * value + right_value) / HZ_2; // ??? можно реализовать умножение на 2 через битовую операци, будет быстре
+    return (left_value - 2 * value + right_value) / HZ_2;
 }
