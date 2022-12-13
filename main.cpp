@@ -1,9 +1,9 @@
 // https://github.com/raketanamarse/super_pc/
 
-
 #include <iostream>
 #include <cmath>
 #include <fstream> 
+#include <cstring>
 #include "l.hpp"
 #include "f.hpp"
 #include "vars.hpp"
@@ -45,51 +45,7 @@ int main(int, char**) {
 
     //инициализация нулями cube БЫСТРОЕ
     memset(cube, '0', sizeof(double)*N); 
-
-    
-
-    /*//инициализация нулями cube
-    for(unsigned n = 0; n < N; ++n){
-        cube[n] = n;
-    }*/
-
-    //инициализация нулями граней next_cube
-
-    //грани x = 0 и x = NX - 1
-    for (unsigned k = 0; k < NZ; ++k){
-
-        for (unsigned j = 0; j < NY; ++j){
-
-            //x = 0
-            next_cube[Count_n(0, j, k)] = 0;
-            //x = NX - 1
-            next_cube[Count_n(NX - 1, j, k)] = 0;
-        }
-    }
-
-    //грани y = 0 и y = Ny - 1
-    for (unsigned k = 0; k < NZ; ++k){
-
-        for (unsigned i = 0; i < NX; ++i){
-
-            //y = 0
-            next_cube[Count_n(i, 0, k)] = 0;
-            //x = NX-1
-            next_cube[Count_n(i, NY - 1, k)] = 0;
-        }
-    }  
-
-    //грани y = 0 и y = Ny - 1
-    for (unsigned j = 0; j < NY; ++j){
-
-        for (unsigned i = 0; i < NX; ++i){
-
-            //z = 0
-            next_cube[Count_n(i, j, 0)] = 0;
-            //x = Nx-1
-            next_cube[Count_n(i, j, NZ - 1)] = 0;
-        }
-    }  
+    memset(next_cube, '0', sizeof(double)*N);
 
     for (unsigned t = 1; t < NT; ++t){
 
@@ -110,18 +66,22 @@ int main(int, char**) {
             }
             z += HZ;
         }
+        auto p = cube;
+        cube = next_cube;
+        next_cube = p;
     }
-    
 
-
-
-
+   
 
     //write_to_file(cube);
 
     unsigned int end_time = clock(); // конечное время
     unsigned int search_time = end_time - start_time; // искомое время
-    cout << "runtime = " << search_time << " ms";
+    cout << "runtime = " << search_time << " mks" << endl;
+    cout << "runtime = " << search_time/1000 << " ms" << endl;
+    cout << "runtime = " << search_time/1000000 << " s" << endl;
+    cout << "runtime = " << (double)search_time/60000000 << " min" << endl;
+    //cout << HT <<endl;
 }
 
 
