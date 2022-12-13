@@ -1,3 +1,4 @@
+#pragma once
 #include "vars.hpp"
 
 //Функция f

@@ -4,23 +4,26 @@
 #include <iostream>
 #include <cmath>
 #include <fstream> 
-#include "L.hpp"
-#include "F.hpp"
+#include "l.hpp"
+#include "f.hpp"
 #include "vars.hpp"
+#include "coords.hpp"
 #include <ctime> // заголовочный файл с прототипом функции clock()
 using namespace std;
 
-#define file_name "out.txt"
+#define file_name "../out.txt"
 
 
 
 void write_to_file(double *massiv){
     try{
         ofstream MyFile(file_name);
-
+        int *xyz = new int[3];
         // Write to the file
         for(int i=0; i<N; i++){
-            MyFile << massiv[i] << ' ' << count_X(i) << ' ' << count_Y(i) << ' ' << count_Z(i) <<"\n"; // U x y z
+            
+            Count_XYZ(i, xyz);
+            MyFile << massiv[i] << ' ' << xyz[0] << ' ' << xyz[1] << ' ' << xyz[2] <<"\n"; // U x y z
         }
         
         // Close the file

@@ -1,3 +1,4 @@
+#pragma once
 #include "vars.hpp"
 
 //Функции рассчета вторых производных 
