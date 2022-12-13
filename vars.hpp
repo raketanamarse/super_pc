@@ -14,7 +14,7 @@ const double HT = 0.1; //Значение шага по t
 
 const int N = NX * NY * NZ; // общее количество элеметов в массиве (кубе)
 
-int count_zz(int i){
+int count_Z(int i){
     return (int) i/(NY*NX);
 }
 
