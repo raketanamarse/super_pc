@@ -85,6 +85,27 @@ int main(int, char**) {
             next_cube[Count_n(i, j, NZ - 1)] = 0;
         }
     }  
+
+    for (unsigned t = 1; t < NT; ++t){
+
+        double z = HZ;
+        for (unsigned k = NY_NX; k < N - NY_NX; k += NY_NX){
+
+            double y = HY; 
+            for (unsigned j = NX; j < NY_NX - NX; j += NX){
+
+               double x = HX;
+               for (unsigned i = 1; i < NX - 1; i += 1){
+
+                    unsigned n = i + j + k;
+                    next_cube[n] = cube[n] + HT * (F(x, y, z) + DX * LX(cube[n - 1], cube[n], cube[n + 1]) + DY * LY(cube[n - NX], cube[n], cube[n + NX]) + DZ * LZ(cube[n - NY_NX], cube[n], cube[n + NY_NX]));
+                    x += HX;
+                }
+                y += HY;
+            }
+            z += HZ;
+        }
+    }
     
 
 

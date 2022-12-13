@@ -10,6 +10,8 @@ const double DX = 0.25, DY = 0.15, DZ = 0.1; //Значение dx, dy, dz в т
 
 const double PI = 3.14159265359; //число Пи
 
-const double HT = 0.1; //Значение шага по t
+const unsigned NT = 21; //Значение количества шагов по T
+
+const double HT = 0.1; //Значение шага по T
 
 const unsigned N = NX * NY * NZ; // общее количество элеметов в массиве (кубе)
