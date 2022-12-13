@@ -14,6 +14,7 @@ void Count_XYZ(unsigned n, int* arr){
     return;
 }
 
+
 //функция для рассчета координат n при заданном x y z
 
 unsigned Count_n(unsigned x, unsigned y, unsigned z){

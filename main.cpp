@@ -39,14 +39,19 @@ int main(int, char**) {
     unsigned int start_time =  clock(); // начальное время
     cout << "start prog\n";
 
-    double *cube = new double[N]; //текущий куб
-
+    int i;
+    double *cube = new double[N];//текущий куб
     double *next_cube = new double[N]; //следующий куб
 
-    //инициализация нулями cube
+    //инициализация нулями cube БЫСТРОЕ
+    memset(cube, '0', sizeof(double)*N); 
+
+    
+
+    /*//инициализация нулями cube
     for(unsigned n = 0; n < N; ++n){
         cube[n] = n;
-    }
+    }*/
 
     //инициализация нулями граней next_cube
 
