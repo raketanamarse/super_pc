@@ -1,14 +1,22 @@
 from math import pi, sin, exp, sqrt
 import numpy as np
 
-u = list(np.loadtxt("out.txt")[:, 0]) # U
-x = list(np.loadtxt("out.txt")[:, 1]) # X
-y = list(np.loadtxt("out.txt")[:, 2]) # Y
-z = list(np.loadtxt("out.txt")[:, 3]) # Z
+u = list(np.loadtxt("out.txt", skiprows=1)[:, 0]) # U
+x = list(np.loadtxt("out.txt", skiprows=1)[:, 1]) # X
+y = list(np.loadtxt("out.txt", skiprows=1)[:, 2]) # Y
+z = list(np.loadtxt("out.txt", skiprows=1)[:, 3]) # Z
 
-hx = 1 / 21
-hy = 1/ 21
-hz = 1 / 21
+with open("out.txt") as f:
+    cells = f.readline().split()
+
+Nx = int(cells[0])
+Ny = int(cells[1])
+Nz = int(cells[2])
+
+hx = 1 / Nx
+hy = 1 / Ny
+hz = 1 / Nz
+
 u_an = []
 diff = []
 diff_sum = 0
