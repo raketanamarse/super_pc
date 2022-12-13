@@ -73,7 +73,7 @@ int main(int, char**) {
 
    
 
-    //write_to_file(cube);
+    write_to_file(cube);
 
     unsigned int end_time = clock(); // конечное время
     unsigned int search_time = end_time - start_time; // искомое время
