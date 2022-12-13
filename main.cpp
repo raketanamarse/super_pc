@@ -41,10 +41,11 @@ int main(int, char**) {
 
     int i;
     double *cube = new double[N];
+    memset(cube, '0', sizeof(double)*N); //быстрое заполнение 0 -- работа с памятью
 
-    for(i=0; i<N; i++){
-        cube[i]=i;
-    }
+    // for(i=0; i<N; i++){
+    //     cube[i]=i;
+    // }
     
 
     write_to_file(cube);

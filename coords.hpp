@@ -13,5 +13,3 @@ void Count_XYZ(int i, int* arr){
     arr[0] = i - arr[2] * NY_NX - arr[1] * NX; 
     return;
 }
-
-
