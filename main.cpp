@@ -20,6 +20,8 @@ void write_to_file(double *massiv){
         ofstream MyFile(file_name);
         int *xyz = new int[3];
         // Write to the file
+        MyFile << NX << ' ' << NY << ' ' << NZ <<"\n"; // NX NY NZ
+            
         for(int n = 0; n < N; n++){
             
             Count_XYZ(n, xyz);
@@ -73,7 +75,7 @@ int main(int, char**) {
 
    
 
-    write_to_file(cube);
+    //write_to_file(cube);
 
     unsigned int end_time = clock(); // конечное время
     unsigned int search_time = end_time - start_time; // искомое время
