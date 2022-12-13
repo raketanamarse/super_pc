@@ -39,7 +39,6 @@ int main(int, char**) {
     unsigned int start_time =  clock(); // начальное время
     cout << "start prog\n";
 
-<<<<<<< HEAD
     int i;
     double *cube = new double[N];
     memset(cube, '0', sizeof(double)*N); //быстрое заполнение 0 -- работа с памятью
@@ -47,7 +46,6 @@ int main(int, char**) {
     // for(i=0; i<N; i++){
     //     cube[i]=i;
     // }
-=======
     double *cube = new double[N]; //текущий куб
 
     double *next_cube = new double[N]; //следующий куб
@@ -94,7 +92,6 @@ int main(int, char**) {
             next_cube[Count_n(i, j, NZ - 1)] = 0;
         }
     }  
->>>>>>> bddaf99fa381579e1dbee2d31f49fecd35d4578e
     
 
 
