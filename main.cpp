@@ -40,20 +40,18 @@ int main(int, char**) {
     cout << "start prog\n";
 
     int i;
-    double *cube = new double[N];
-    memset(cube, '0', sizeof(double)*N); //быстрое заполнение 0 -- работа с памятью
-
-    // for(i=0; i<N; i++){
-    //     cube[i]=i;
-    // }
-    double *cube = new double[N]; //текущий куб
-
+    double *cube = new double[N];//текущий куб
     double *next_cube = new double[N]; //следующий куб
 
-    //инициализация нулями cube
+    //инициализация нулями cube БЫСТРОЕ
+    memset(cube, '0', sizeof(double)*N); 
+
+    
+
+    /*//инициализация нулями cube
     for(unsigned n = 0; n < N; ++n){
         cube[n] = n;
-    }
+    }*/
 
     //инициализация нулями граней next_cube
 
