@@ -6,9 +6,9 @@ x = list(np.loadtxt("out.txt")[:, 1]) # X
 y = list(np.loadtxt("out.txt")[:, 2]) # Y
 z = list(np.loadtxt("out.txt")[:, 3]) # Z
 
-hx = 1 / 21
-hy = 1/ 21
-hz = 1 / 21
+hx = 1 / 81
+hy = 1/ 81
+hz = 1 / 81
 u_an = []
 diff = []
 diff_sum = 0
