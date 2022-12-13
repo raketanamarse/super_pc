@@ -5,14 +5,17 @@ u = list(np.loadtxt("out.txt")[:, 0]) # U
 x = list(np.loadtxt("out.txt")[:, 1]) # X
 y = list(np.loadtxt("out.txt")[:, 2]) # Y
 z = list(np.loadtxt("out.txt")[:, 3]) # Z
-n = len(u)
+
+hx = 1 / 21
+hy = 1/ 21
+hz = 1 / 21
 u_an = []
 diff = []
 diff_sum = 0
 
 # Give a list of analytical solutions
 for i in range(0, len(u)):
-    n = sin(pi * x[i]) * sin(pi * y[i]) * sin(pi * z[i]) * (1 - exp(-0.5 * pi*pi))
+    n = sin(pi * x[i] * hx) * sin(pi * y[i] * hy) * sin(pi * z[i] * hz) * (1 - exp(-0.5 * pi*pi))
     u_an.append(n)
 
 # Give a list of difference between analytical solutions and list of U
