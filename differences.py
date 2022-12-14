@@ -9,9 +9,9 @@ z = list(np.loadtxt("out.txt", skiprows=1)[:, 3]) # Z
 with open("out.txt") as f:
     cells = f.readline().split()
 
-Nx = int(cells[0])
-Ny = int(cells[1])
-Nz = int(cells[2])
+Nx = int(cells[0]) - 1
+Ny = int(cells[1]) - 1
+Nz = int(cells[2]) - 1
 
 hx = 1 / Nx
 hy = 1 / Ny
