@@ -37,9 +37,9 @@ void write_to_file(double *massiv){
 
 
 int main(int, char**) {
-
+    cout << "start prog\n";
     unsigned int start_time =  clock(); // начальное время
-    //cout << "start prog\n";
+    
 
     double *cube = new double[N];//текущий куб
     double *next_cube = new double[N]; //следующий куб

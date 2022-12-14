@@ -37,6 +37,6 @@ for i in range(0, len(diff)):
 #standard deviation
 dev = sqrt(diff_sum * diff_sum / len(diff))
 
-print(max(diff))
-print(diff_sum)
-print(round(dev,2))
+print(" max error = ", max(diff))
+print(" sum errors = ", diff_sum)
+print(" sred kvadrat errer = ", round(dev,2))
