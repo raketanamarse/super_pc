@@ -1,5 +1,6 @@
 from math import pi, sin, exp, sqrt
 import numpy as np
+import meshio
 
 u = list(np.loadtxt("out.txt", skiprows=1)[:, 0]) # U
 x = list(np.loadtxt("out.txt", skiprows=1)[:, 1]) # X
@@ -7,11 +8,11 @@ y = list(np.loadtxt("out.txt", skiprows=1)[:, 2]) # Y
 z = list(np.loadtxt("out.txt", skiprows=1)[:, 3]) # Z
 
 with open("out.txt") as f:
-    cells = f.readline().split()
+    cell = f.readline().split()
 
-Nx = int(cells[0])
-Ny = int(cells[1])
-Nz = int(cells[2])
+Nx = int(cell[0])
+Ny = int(cell[1])
+Nz = int(cell[2])
 
 hx = 1 / Nx
 hy = 1 / Ny
@@ -37,6 +38,23 @@ for i in range(0, len(diff)):
 #standard deviation
 dev = sqrt(diff_sum * diff_sum / len(diff))
 
-print(max(diff))
-print(diff_sum)
-print(round(dev,2))
+print("Max diff =", max(diff))
+print("Sum of diff =", diff_sum)
+print("Standart deviation =",round(dev,2))
+
+points_all = []
+for i in range(0, len(x)):
+    points_all.append(x[i])
+    points_all.append(y[i])
+    points_all.append(z[i])
+points = [points_all[i:i+3] for i in range(0, len(points_all), 3)]
+
+cells = [("quad8", [[22, 1, 0, 21, 463, 442, 441, 462]])]
+
+mesh = meshio.Mesh(
+    points,
+    cells,
+    point_data={"U": u},
+)
+mesh.write("foo.vtk")
+
