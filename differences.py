@@ -10,9 +10,15 @@ z = list(np.loadtxt("out.txt", skiprows=1)[:, 3]) # Z
 with open("out.txt") as f:
     cell = f.readline().split()
 
+
 Nx = int(cell[0])
 Ny = int(cell[1])
 Nz = int(cell[2])
+
+Nx = int(cells[0]) - 1
+Ny = int(cells[1]) - 1
+Nz = int(cells[2]) - 1
+
 
 hx = 1 / Nx
 hy = 1 / Ny
@@ -38,6 +44,7 @@ for i in range(0, len(diff)):
 #standard deviation
 dev = sqrt(diff_sum * diff_sum / len(diff))
 
+
 print("Max diff =", max(diff))
 print("Sum of diff =", diff_sum)
 print("Standart deviation =",round(dev,2))
@@ -57,4 +64,5 @@ mesh = meshio.Mesh(
     point_data={"U": u},
 )
 mesh.write("foo.vtk")
+
 
