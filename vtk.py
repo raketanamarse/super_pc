@@ -11,14 +11,14 @@ with open("out.txt") as f:
     cell = f.readline().split()
 
 
-Nx = int(cell[0]) - 1
-Ny = int(cell[1]) - 1
-Nz = int(cell[2]) - 1
+Nx = int(cell[0])
+Ny = int(cell[1])
+Nz = int(cell[2])
 
 
-hx = 1 / Nx
-hy = 1 / Ny
-hz = 1 / Nz
+hx = 1 / (Nx - 1)
+hy = 1 / (Ny - 1)
+hz = 1 / (Nz - 1)
 
 u_an = []
 diff = []
@@ -52,8 +52,24 @@ for i in range(0, len(x)):
     points_all.append(z[i])
 points = [points_all[i:i+3] for i in range(0, len(points_all), 3)]
 
-cells = [("quad8", [[22, 1, 0, 21, 463, 442, 441, 462]])]
+cells = []
 
+for i in range(0, Nx - 1):
+    for j in range(0, Ny - 1):
+        for k in range(0, Nz - 1):
+            cells_list = []
+            cells_list.append(i + j * Nx + k * Nx * Ny)
+            cells_list.append(i + 1 + j * Nx + k * Nx * Ny)
+            cells_list.append(i + (j + 1) * Nx + k * Nx * Ny)
+            cells_list.append(i + j * Nx + (k + 1) * Nx * Ny)
+            cells_list.append(i + 1 + (j + 1) * Nx + k * Nx * Ny)
+            cells_list.append(i + 1 + j * Nx + (k + 1) * Nx * Ny)
+            cells_list.append(i + (j + 1) * Nx + (k + 1) * Nx * Ny)
+            cells_list.append(i + 1 + (j + 1) * Nx + (k + 1) * Nx * Ny)
+            cells += [( "quad8", [cells_list])]
+
+#cells = [("quad8", [[22, 1, 0, 21, 463, 442, 441, 462]])]
+print(cells[0])
 mesh = meshio.Mesh(
     points,
     cells,
