@@ -47,9 +47,9 @@ print("Standart deviation =",round(dev,2))
 
 points_all = []
 for i in range(0, len(x)):
-    points_all.append(x[i])
-    points_all.append(y[i])
-    points_all.append(z[i])
+    points_all.append(x[i] * hx)
+    points_all.append(y[i] * hy)
+    points_all.append(z[i] * hz)
 points = [points_all[i:i+3] for i in range(0, len(points_all), 3)]
 
 cells = []
@@ -75,6 +75,12 @@ mesh = meshio.Mesh(
     point_data={"U": u},
 )
 
-mesh.write("foo.vtk")
+mesh.write("numeric.vtk", file_format="vtk42")
 
+mesh = meshio.Mesh(
+    points,
+    cells,
+    point_data={"U": u_an},
+)
 
+mesh.write("analytic.vtk", file_format="vtk42")

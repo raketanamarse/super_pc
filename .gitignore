@@ -1,2 +1,4 @@
 build
 out.txt
+analytic.vtk
+numeric.vtk
