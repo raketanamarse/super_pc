@@ -58,23 +58,23 @@ for i in range(0, Nx - 1):
     for j in range(0, Ny - 1):
         for k in range(0, Nz - 1):
             cells_list = []
-            cells_list.append(i + j * Nx + k * Nx * Ny)
             cells_list.append(i + 1 + j * Nx + k * Nx * Ny)
-            cells_list.append(i + (j + 1) * Nx + k * Nx * Ny)
-            cells_list.append(i + j * Nx + (k + 1) * Nx * Ny)
             cells_list.append(i + 1 + (j + 1) * Nx + k * Nx * Ny)
-            cells_list.append(i + 1 + j * Nx + (k + 1) * Nx * Ny)
-            cells_list.append(i + (j + 1) * Nx + (k + 1) * Nx * Ny)
             cells_list.append(i + 1 + (j + 1) * Nx + (k + 1) * Nx * Ny)
-            cells += [( "quad8", [cells_list])]
-
+            cells_list.append(i + 1 + j * Nx + (k + 1) * Nx * Ny)
+            cells_list.append(i + j * Nx + k * Nx * Ny)
+            cells_list.append(i + (j + 1) * Nx + k * Nx * Ny)
+            cells_list.append(i + (j + 1) * Nx + (k + 1) * Nx * Ny)
+            cells_list.append(i + j * Nx + (k + 1) * Nx * Ny)
+            cells += [( "hexahedron", [cells_list])]
+            
 #cells = [("quad8", [[22, 1, 0, 21, 463, 442, 441, 462]])]
-print(cells[0])
 mesh = meshio.Mesh(
     points,
     cells,
     point_data={"U": u},
 )
+
 mesh.write("foo.vtk")
 
 
