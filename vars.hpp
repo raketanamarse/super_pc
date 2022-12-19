@@ -2,7 +2,7 @@
 
 //Глобальные константы
 
-const unsigned NX = 121, NY = 61, NZ = 21; //Значение количества точек по осям X, Y, Z
+const int NX = 122, NY = 62, NZ = 22; //Значение количества точек по осям X, Y, Z
 
 const double HX = 1 / double(NX - 1), HY = 1 / double(NY - 1), HZ = 1 / double(NZ - 1); //Значение шага по осям X, Y, Z
 
@@ -12,6 +12,4 @@ const double PI = 3.14159265359; //число Пи
 
 const double HT = 0.45 / (DX/HX/HX + DY/HY/HY + DZ/HZ/HZ); //Значение шага по T
 
-const unsigned NT = unsigned(1 / HT); //Значение количества шагов по T
-
-const unsigned N = NX * NY * NZ; // общее количество элеметов в массиве (кубе)
+const int NT = int(1 / HT); //Значение количества шагов по T
