@@ -95,14 +95,19 @@ int main(int argc, char** argv) {
 
         int req_i = 0;
 
+        double* buffer_north;
+        double* buffer_north_r;
+        double* buffer_south;
+        double* buffer_south_r;
+        double* buffer_west;
+        double* buffer_west_r;
+        double* buffer_east;
+        double* buffer_east_r;
+
         //север-------------------------------------------------------------------------------------------------------------
         if (top == true){
-            
 
-            //std::cout << "north id = " << id << std::endl;
-
-            //отправка сообщения
-            double* buffer_north = new double[(nx - 2) * (NZ - 2)];
+            buffer_north = new double[(nx - 2) * (NZ - 2)];
 
             int index = 0;
 
@@ -119,36 +124,18 @@ int main(int argc, char** argv) {
             MPI_Isend(buffer_north, (nx - 2) * (NZ - 2), MPI_DOUBLE, id + s, TAG, MPI_COMM_WORLD, &reqs[req_i]);
             req_i++;
 
-            //std::cout << "SENT\n"; 
 
-
-            double* buffer_north_r = new double[(nx - 2) * (NZ - 2)];
+            buffer_north_r = new double[(nx - 2) * (NZ - 2)];
             //принятие сообщения
             MPI_Irecv(buffer_north_r, (nx - 2) * (NZ - 2), MPI_DOUBLE, id + s, TAG, MPI_COMM_WORLD, &reqs[req_i]);
-            req_i++;
-
-            index = 0;
-
-            for (int k = nx_ny; k < N - nx_ny; k += nx_ny){
-
-                for (int i = 1; i < nx - 1; i += 1){
-
-                    int n = i + (nx_ny - nx) + k; //j = nx*ny - nx
-                    cube[n] = buffer_north_r[index];
-                    ++index;
-                }
-            }
-
-                
+            req_i++;            
         }
 
         //юг----------------------------------------------------------------------------------------------------------------
         if (down == true){
 
-            //std::cout << "south id = " << id << std::endl;
-
             //отправка сообщения
-            double* buffer_south = new double[(nx - 2) * (NZ - 2)];
+            buffer_south = new double[(nx - 2) * (NZ - 2)];
 
             int index = 0;
 
@@ -164,35 +151,18 @@ int main(int argc, char** argv) {
 
             MPI_Isend(buffer_south, (nx - 2) * (NZ - 2), MPI_DOUBLE, id - s, TAG, MPI_COMM_WORLD, &reqs[req_i]);
             req_i++;
-            //std::cout << "SENT\n";
 
-            double* buffer_south_r = new double[(nx - 2) * (NZ - 2)];
+            buffer_south_r = new double[(nx - 2) * (NZ - 2)];
 
             //принятие сообщения
             MPI_Irecv(buffer_south_r, (nx - 2) * (NZ - 2), MPI_DOUBLE, id - s, TAG, MPI_COMM_WORLD, &reqs[req_i]);
             req_i++;
-
-            //std::cout << "RECEIVED\n"; 
-            index = 0;
-
-            for (int k = nx_ny; k < N - nx_ny; k += nx_ny){
-
-                for (int i = 1; i < nx - 1; i += 1){
-
-                    int n = i + 0 + k; //j = 0
-                    cube[n] = buffer_south_r[index];
-                    index++;
-                }
-            }
         }
 
         //запад--------------------------------------------------------------------------------------------------------
         if (left == true){
 
-            //std::cout << "west id = " << id << std::endl;
-
-            //отправка сообщения
-            double* buffer_west = new double[(ny - 2) * (NZ - 2)];
+            buffer_west = new double[(ny - 2) * (NZ - 2)];
 
             int index = 0;
 
@@ -209,36 +179,17 @@ int main(int argc, char** argv) {
             MPI_Isend(buffer_west, (ny - 2) * (NZ - 2), MPI_DOUBLE, id - 1, TAG, MPI_COMM_WORLD, &reqs[req_i]);
             req_i++;
 
-            //std::cout << "SENT\n";
-
-
-            double* buffer_west_r = new double[(ny - 2) * (NZ - 2)];
+            buffer_west_r = new double[(ny - 2) * (NZ - 2)];
 
             //принятие сообщения
             MPI_Irecv(buffer_west_r, (ny - 2) * (NZ - 2), MPI_DOUBLE, id - 1, TAG, MPI_COMM_WORLD, &reqs[req_i]);
             req_i++;
-
-            //std::cout << "RECEIVED\n"; 
-            index = 0;
-
-            for (int k = nx_ny; k < N - nx_ny; k += nx_ny){
-
-                for (int j = nx; j < nx_ny - nx; j += nx){
-
-                    int n = j + k; //i = 0
-                    cube[n] = buffer_west_r[index];
-                    index++;
-                }
-            }
         }
 
         //восток
         if (right == true){
 
-            //std::cout << "east id = " << id << std::endl;
-            
-            //отправка сообщения
-            double* buffer_east = new double[(ny - 2) * (NZ - 2)];
+            buffer_east = new double[(ny - 2) * (NZ - 2)];
 
             int index = 0;
 
@@ -254,15 +205,64 @@ int main(int argc, char** argv) {
 
             MPI_Isend(buffer_east, (ny - 2) * (NZ - 2), MPI_DOUBLE, id + 1, TAG, MPI_COMM_WORLD, &reqs[req_i]);
             req_i++;
-            //std::cout << "SENT\n";
 
-            double* buffer_east_r = new double[(ny - 2) * (NZ - 2)];
+            buffer_east_r = new double[(ny - 2) * (NZ - 2)];
 
             //принятие сообщения
             MPI_Irecv(buffer_east_r, (ny - 2) * (NZ - 2), MPI_DOUBLE, id + 1, TAG, MPI_COMM_WORLD, &reqs[req_i]);
             req_i++;
-            //std::cout << "RECEIVED\n"; 
-            index = 0;
+        }
+        
+        MPI_Waitall(req_size, reqs, stats);
+
+        if (top == true){
+
+            int index = 0;
+
+            for (int k = nx_ny; k < N - nx_ny; k += nx_ny){
+
+                for (int i = 1; i < nx - 1; i += 1){
+
+                    int n = i + (nx_ny - nx) + k; //j = nx*ny - nx
+                    cube[n] = buffer_north_r[index];
+                    index++;
+                }
+            }
+        }
+
+        if (down == true){
+
+            int index = 0;
+
+            for (int k = nx_ny; k < N - nx_ny; k += nx_ny){
+
+                for (int i = 1; i < nx - 1; i += 1){
+
+                    int n = i + 0 + k; //j = 0
+                    cube[n] = buffer_south_r[index];
+                    index++;
+                }
+            }
+        }
+
+        if (left == true){
+
+            int index = 0;
+
+            for (int k = nx_ny; k < N - nx_ny; k += nx_ny){
+
+                for (int j = nx; j < nx_ny - nx; j += nx){
+
+                    int n = j + k; //i = 0
+                    cube[n] = buffer_west_r[index];
+                    index++;
+                }
+            }
+        }
+
+        if (right == true){
+
+            int index = 0;
 
             for (int k = nx_ny; k < N - nx_ny; k += nx_ny){
 
@@ -274,12 +274,8 @@ int main(int argc, char** argv) {
                 }
             }
         }
-        MPI_Waitall(req_size, reqs, stats);
-        //std::cout << id << "-------------------------------------------------------------------------------\n";
 
     }
-
-    //write_to_file(cube, id, nx, ny, NZ);
 
     string file_name =  "./out_result/out_";
     file_name += to_string(id);

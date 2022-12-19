@@ -1,7 +1,7 @@
 from math import pi, sin, exp, sqrt
 import numpy as np
 
-filename = "./out_result/out_3.txt"
+filename = "./out_result/out_0.txt"
 
 u = list(np.loadtxt(filename, skiprows=1)[:, 0]) # U
 x = list(np.loadtxt(filename, skiprows=1)[:, 1]) # X
