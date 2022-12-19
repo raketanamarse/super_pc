@@ -1,5 +1,10 @@
 // https://github.com/raketanamarse/super_pc/
 
+//сборка и запуск mpi выполняется через команды 
+//mpic++ -o2 main.cpp -o main
+//mpiexec -n 1 main
+//вместо 1 можно указать любое количество процессоров/потоков
+
 #include <iostream>
 #include <cmath>
 #include <fstream> 
@@ -8,6 +13,7 @@
 #include "f.hpp"
 #include "vars.hpp"
 #include "coords.hpp"
+#include "mpi.h"
 #include <ctime> // заголовочный файл с прототипом функции clock()
 using namespace std;
 
