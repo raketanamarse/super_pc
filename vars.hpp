@@ -2,7 +2,7 @@
 
 //Глобальные константы
 
-const unsigned NX = 121, NY = 61, NZ = 21; //Значение количества точек по осям X, Y, Z
+const unsigned NX = 122, NY = 62, NZ = 22; //Значение количества точек по осям X, Y, Z
 
 const double HX = 1 / double(NX - 1), HY = 1 / double(NY - 1), HZ = 1 / double(NZ - 1); //Значение шага по осям X, Y, Z
 

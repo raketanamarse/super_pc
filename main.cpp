@@ -72,16 +72,19 @@ int main(int, char**) {
         next_cube = p;
     }
 
-   
-
-    write_to_file(cube);
-
     unsigned int end_time = clock(); // конечное время
     unsigned int search_time = end_time - start_time; // искомое время
     cout << "runtime = " << search_time << " mks" << endl;
     cout << "runtime = " << search_time/1000 << " ms" << endl;
     cout << "runtime = " << search_time/1000000 << " s" << endl;
     cout << "runtime = " << (double)search_time/60000000 << " min" << endl;
+    cout << "NX = " << NX << endl;
+    cout << "NY = " << NY << endl;
+    cout << "NZ = " << NZ << endl;
+    cout << "NT = " << NT << endl;
+    cout << "NX * NY * NZ * NT = " << N * NT << endl;
+
+    write_to_file(cube);
     //cout << HT <<endl;
 }
 

@@ -40,8 +40,8 @@ dev = sqrt(diff_sum * diff_sum / len(diff))
 
 
 print("Max diff =", max(diff))
-print("Sum of diff =", diff_sum)
-print("Standart deviation =",round(dev,2))
+# print("Sum of diff =", diff_sum)
+# print("Standart deviation =",round(dev,2))
 
 
 
