@@ -3,3 +3,4 @@ out.txt
 analytic.vtk
 numeric.vtk
 main
+out_result

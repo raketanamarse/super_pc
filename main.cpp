@@ -12,36 +12,12 @@
 #include "l.hpp"
 #include "f.hpp"
 #include "vars.hpp"
-#include "coords.hpp"
 #include "mpi.h"
 #include <ctime> // заголовочный файл с прототипом функции clock()
 using namespace std;
 
-#define file_name "../out.txt"
 
 const int TAG = 0;
-
-
-// void write_to_file(double *massiv){
-//     try{
-//         ofstream MyFile(file_name);
-//         int *xyz = new int[3];
-//         // Write to the file
-//         MyFile << NX << ' ' << NY << ' ' << NZ <<"\n"; // NX NY NZ
-            
-//         for(int n = 0; n < N; n++){
-            
-//             Count_XYZ(n, xyz);
-//             MyFile << massiv[n] << ' ' << xyz[0] << ' ' << xyz[1] << ' ' << xyz[2] <<"\n"; // U x y z
-//         }
-        
-//         // Close the file
-//         MyFile.close();
-//     }
-//     catch(int cod_error){cout << "error write to " << file_name << "with error code" << cod_error;}
-// }
-
-
 
 int main(int argc, char** argv) {
     
@@ -59,6 +35,34 @@ int main(int argc, char** argv) {
     const int N = nx * ny * NZ; 
     const int nx_ny = nx * ny;
 
+    //инициализация соседей
+    const bool top = (0 <= (id + s) && (id + s) < size);
+    const bool down = (0 <= (id - s) && (id - s) < size);
+    const bool left = (id % s != 0);
+    const bool right = (((id + 1) % s) != 0);
+
+    int req_size = 0;
+    if (top == true){
+
+        req_size += 2;
+    }
+    if (down == true){
+
+        req_size += 2;
+    }
+    if (left == true){
+
+        req_size += 2;
+    }
+    if (right == true){
+
+        req_size += 2;
+    }
+
+    MPI_Request reqs[req_size];
+    MPI_Status stats[req_size];
+
+
     double *cube = new double[N];//текущий куб
     double *next_cube = new double[N]; //следующий куб
 
@@ -69,7 +73,7 @@ int main(int argc, char** argv) {
     for (int t = 1; t < NT; ++t){
 
         double z = HZ;
-        for (int k = NY_NX; k < N - nx_ny; k += nx_ny){
+        for (int k = nx_ny; k < N - nx_ny; k += nx_ny){
 
             double y = HY * ((ny - 2) * (id / s) + 1); 
             for (int j = nx; j < nx_ny - nx; j += nx){
@@ -89,18 +93,20 @@ int main(int argc, char** argv) {
         cube = next_cube;
         next_cube = p;
 
-        MPI_Request request;
-        //MPI_Status status;
+        int req_i = 0;
 
-        //север
-        if (0 <= (id + s) && (id + s) < size){
+        //север-------------------------------------------------------------------------------------------------------------
+        if (top == true){
+            
+
+            //std::cout << "north id = " << id << std::endl;
 
             //отправка сообщения
             double* buffer_north = new double[(nx - 2) * (NZ - 2)];
 
             int index = 0;
 
-            for (int k = NY_NX; k < N - nx_ny; k += nx_ny){
+            for (int k = nx_ny; k < N - nx_ny; k += nx_ny){
 
                 for (int i = 1; i < nx - 1; i += 1){
 
@@ -110,71 +116,196 @@ int main(int argc, char** argv) {
                 }
             }
 
-            MPI_Isend(buffer_north, (nx - 2) * (NZ - 2), MPI_DOUBLE, id + s, TAG, MPI_COMM_WORLD, &request);
+            MPI_Isend(buffer_north, (nx - 2) * (NZ - 2), MPI_DOUBLE, id + s, TAG, MPI_COMM_WORLD, &reqs[req_i]);
+            req_i++;
+
+            //std::cout << "SENT\n"; 
 
 
+            double* buffer_north_r = new double[(nx - 2) * (NZ - 2)];
             //принятие сообщения
-            MPI_Irecv(buffer_north, (nx - 2) * (NZ - 2), MPI_DOUBLE, id + s, TAG, MPI_COMM_WORLD, &request);
+            MPI_Irecv(buffer_north_r, (nx - 2) * (NZ - 2), MPI_DOUBLE, id + s, TAG, MPI_COMM_WORLD, &reqs[req_i]);
+            req_i++;
 
             index = 0;
 
-            for (int k = NY_NX; k < N - nx_ny; k += nx_ny){
+            for (int k = nx_ny; k < N - nx_ny; k += nx_ny){
 
                 for (int i = 1; i < nx - 1; i += 1){
 
-                    int n = i + (nx_ny - nx) + k; //j = nx*ny - 2nx
-                    cube[n] = buffer_north[index];
+                    int n = i + (nx_ny - nx) + k; //j = nx*ny - nx
+                    cube[n] = buffer_north_r[index];
                     ++index;
                 }
             }
 
                 
         }
-        //юг
-        if (0 <= (id - s) && (id - s) < size){
+
+        //юг----------------------------------------------------------------------------------------------------------------
+        if (down == true){
+
+            //std::cout << "south id = " << id << std::endl;
 
             //отправка сообщения
             double* buffer_south = new double[(nx - 2) * (NZ - 2)];
 
             int index = 0;
 
-            for (int k = NY_NX; k < N - nx_ny; k += nx_ny){
+            for (int k = nx_ny; k < N - nx_ny; k += nx_ny){
 
                 for (int i = 1; i < nx - 1; i += 1){
 
-                    int n = i + (2 * nx) + k; //j = 2nx
+                    int n = i + (nx) + k; //j = nx
                     buffer_south[index] = cube[n];
-                    ++index;
+                    index++;
                 }
             }
 
-            MPI_Isend(buffer_south, (nx - 2) * (NZ - 2), MPI_DOUBLE, id - s, TAG, MPI_COMM_WORLD, &request);
+            MPI_Isend(buffer_south, (nx - 2) * (NZ - 2), MPI_DOUBLE, id - s, TAG, MPI_COMM_WORLD, &reqs[req_i]);
+            req_i++;
+            //std::cout << "SENT\n";
 
+            double* buffer_south_r = new double[(nx - 2) * (NZ - 2)];
 
             //принятие сообщения
-            MPI_Irecv(buffer_south, (nx - 2) * (NZ - 2), MPI_DOUBLE, id - s, TAG, MPI_COMM_WORLD, &request);
+            MPI_Irecv(buffer_south_r, (nx - 2) * (NZ - 2), MPI_DOUBLE, id - s, TAG, MPI_COMM_WORLD, &reqs[req_i]);
+            req_i++;
 
+            //std::cout << "RECEIVED\n"; 
             index = 0;
 
-            for (int k = NY_NX; k < N - nx_ny; k += nx_ny){
+            for (int k = nx_ny; k < N - nx_ny; k += nx_ny){
 
                 for (int i = 1; i < nx - 1; i += 1){
 
-                    int n = i + (nx) + k; //j = nx*ny - 2nx
-                    cube[n] = buffer_south[index];
-                    ++index;
+                    int n = i + 0 + k; //j = 0
+                    cube[n] = buffer_south_r[index];
+                    index++;
                 }
             }
         }
-        //запад
-        //восток
 
+        //запад--------------------------------------------------------------------------------------------------------
+        if (left == true){
+
+            //std::cout << "west id = " << id << std::endl;
+
+            //отправка сообщения
+            double* buffer_west = new double[(ny - 2) * (NZ - 2)];
+
+            int index = 0;
+
+            for (int k = nx_ny; k < N - nx_ny; k += nx_ny){
+
+                for (int j = nx; j < nx_ny - nx; j += nx){
+
+                    int n = 1 + j + k; //i = 1
+                    buffer_west[index] = cube[n];
+                    index++;
+                }
+            }
+
+            MPI_Isend(buffer_west, (ny - 2) * (NZ - 2), MPI_DOUBLE, id - 1, TAG, MPI_COMM_WORLD, &reqs[req_i]);
+            req_i++;
+
+            //std::cout << "SENT\n";
+
+
+            double* buffer_west_r = new double[(ny - 2) * (NZ - 2)];
+
+            //принятие сообщения
+            MPI_Irecv(buffer_west_r, (ny - 2) * (NZ - 2), MPI_DOUBLE, id - 1, TAG, MPI_COMM_WORLD, &reqs[req_i]);
+            req_i++;
+
+            //std::cout << "RECEIVED\n"; 
+            index = 0;
+
+            for (int k = nx_ny; k < N - nx_ny; k += nx_ny){
+
+                for (int j = nx; j < nx_ny - nx; j += nx){
+
+                    int n = j + k; //i = 0
+                    cube[n] = buffer_west_r[index];
+                    index++;
+                }
+            }
+        }
+
+        //восток
+        if (right == true){
+
+            //std::cout << "east id = " << id << std::endl;
+            
+            //отправка сообщения
+            double* buffer_east = new double[(ny - 2) * (NZ - 2)];
+
+            int index = 0;
+
+            for (int k = nx_ny; k < N - nx_ny; k += nx_ny){
+
+                for (int j = nx; j < nx_ny - nx; j += nx){
+
+                    int n = (nx - 2) + j + k; //i = nx - 2
+                    buffer_east[index] = cube[n];
+                    index++;
+                }
+            }
+
+            MPI_Isend(buffer_east, (ny - 2) * (NZ - 2), MPI_DOUBLE, id + 1, TAG, MPI_COMM_WORLD, &reqs[req_i]);
+            req_i++;
+            //std::cout << "SENT\n";
+
+            double* buffer_east_r = new double[(ny - 2) * (NZ - 2)];
+
+            //принятие сообщения
+            MPI_Irecv(buffer_east_r, (ny - 2) * (NZ - 2), MPI_DOUBLE, id + 1, TAG, MPI_COMM_WORLD, &reqs[req_i]);
+            req_i++;
+            //std::cout << "RECEIVED\n"; 
+            index = 0;
+
+            for (int k = nx_ny; k < N - nx_ny; k += nx_ny){
+
+                for (int j = nx; j < nx_ny - nx; j += nx){
+
+                    int n = (nx - 1) + j + k; //i = nx - 1
+                    cube[n] = buffer_east_r[index];
+                    index++;
+                }
+            }
+        }
+        MPI_Waitall(req_size, reqs, stats);
+        //std::cout << id << "-------------------------------------------------------------------------------\n";
 
     }
 
-   
+    //write_to_file(cube, id, nx, ny, NZ);
 
-    // write_to_file(cube);
+    string file_name =  "./out_result/out_";
+    file_name += to_string(id);
+    file_name += ".txt";
+    cout << file_name;
+    try{
+        ofstream MyFile(file_name);
+        // Write to the file
+        MyFile << NX << ' ' << NY << ' ' << NZ <<"\n"; // NX NY NZ
+
+        for (int k = nx_ny; k < N - nx_ny; k += nx_ny){
+
+            for (int j = nx; j < nx_ny - nx; j += nx){
+
+               for (int i = 1; i < nx - 1; i += 1){
+
+                    int n = i + j + k;
+                    MyFile << cube[n] << ' ' << (id % s) * (nx - 2) + i << ' ' << (id / s) * (ny - 2) + j / nx << ' ' << k / nx_ny <<"\n"; // U i j k
+                    
+                }
+            }
+        }
+        // Close the file
+        MyFile.close();
+    }
+    catch(int cod_error){cout << "error write to " << file_name << "with error code" << cod_error;}
 
     // int int end_time = clock(); // конечное время
     // int int search_time = end_time - start_time; // искомое время

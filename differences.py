@@ -1,12 +1,14 @@
 from math import pi, sin, exp, sqrt
 import numpy as np
 
-u = list(np.loadtxt("out.txt", skiprows=1)[:, 0]) # U
-x = list(np.loadtxt("out.txt", skiprows=1)[:, 1]) # X
-y = list(np.loadtxt("out.txt", skiprows=1)[:, 2]) # Y
-z = list(np.loadtxt("out.txt", skiprows=1)[:, 3]) # Z
+filename = "./out_result/out_3.txt"
 
-with open("out.txt") as f:
+u = list(np.loadtxt(filename, skiprows=1)[:, 0]) # U
+x = list(np.loadtxt(filename, skiprows=1)[:, 1]) # X
+y = list(np.loadtxt(filename, skiprows=1)[:, 2]) # Y
+z = list(np.loadtxt(filename, skiprows=1)[:, 3]) # Z
+
+with open(filename) as f:
     cell = f.readline().split()
 
 Nx = int(cell[0]) - 1
