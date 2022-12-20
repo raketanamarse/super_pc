@@ -75,6 +75,15 @@ int main(int argc, char** argv) {
     memset(cube, '0', sizeof(double)*N); 
     memset(next_cube, '0', sizeof(double)*N);
 
+    double* buffer_north;
+    double* buffer_north_r;
+    double* buffer_south;
+    double* buffer_south_r;
+    double* buffer_west;
+    double* buffer_west_r;
+    double* buffer_east;
+    double* buffer_east_r;
+
     for (int t = 1; t < NT; ++t){
 
         double z = HZ;
@@ -100,14 +109,7 @@ int main(int argc, char** argv) {
 
         int req_i = 0;
 
-        double* buffer_north;
-        double* buffer_north_r;
-        double* buffer_south;
-        double* buffer_south_r;
-        double* buffer_west;
-        double* buffer_west_r;
-        double* buffer_east;
-        double* buffer_east_r;
+
 
         //север-------------------------------------------------------------------------------------------------------------
         if (top == true){
