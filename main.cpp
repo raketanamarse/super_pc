@@ -35,10 +35,15 @@ int main(int argc, char** argv) {
     const int N = nx * ny * NZ; 
     const int nx_ny = nx * ny;
 
+    int id_top = id + s;
+    int id_down = id - s;
+    int id_ost_s = id % s;
+    int N_nx_ny = N - nx_ny; // N - nx_ny
+
     //инициализация соседей
-    const bool top = (0 <= (id + s) && (id + s) < size);
-    const bool down = (0 <= (id - s) && (id - s) < size);
-    const bool left = (id % s != 0);
+    const bool top = (0 <= (id_top) && (id_top) < size);
+    const bool down = (0 <= (id_down) && (id_down) < size);
+    const bool left = (id_ost_s != 0);
     const bool right = (((id + 1) % s) != 0);
 
     int req_size = 0;
@@ -73,12 +78,12 @@ int main(int argc, char** argv) {
     for (int t = 1; t < NT; ++t){
 
         double z = HZ;
-        for (int k = nx_ny; k < N - nx_ny; k += nx_ny){
+        for (int k = nx_ny; k < N_nx_ny; k += nx_ny){
 
             double y = HY * ((ny - 2) * (id / s) + 1); 
             for (int j = nx; j < nx_ny - nx; j += nx){
 
-               double x = HX * ((nx - 2) * (id % s) + 1);
+               double x = HX * ((nx - 2) * (id_ost_s) + 1);
                for (int i = 1; i < nx - 1; i += 1){
 
                     int n = i + j + k;
@@ -111,7 +116,7 @@ int main(int argc, char** argv) {
 
             int index = 0;
 
-            for (int k = nx_ny; k < N - nx_ny; k += nx_ny){
+            for (int k = nx_ny; k < N_nx_ny; k += nx_ny){
 
                 for (int i = 1; i < nx - 1; i += 1){
 
@@ -121,13 +126,13 @@ int main(int argc, char** argv) {
                 }
             }
 
-            MPI_Isend(buffer_north, (nx - 2) * (NZ - 2), MPI_DOUBLE, id + s, TAG, MPI_COMM_WORLD, &reqs[req_i]);
+            MPI_Isend(buffer_north, (nx - 2) * (NZ - 2), MPI_DOUBLE, id_top, TAG, MPI_COMM_WORLD, &reqs[req_i]);
             req_i++;
 
 
             buffer_north_r = new double[(nx - 2) * (NZ - 2)];
             //принятие сообщения
-            MPI_Irecv(buffer_north_r, (nx - 2) * (NZ - 2), MPI_DOUBLE, id + s, TAG, MPI_COMM_WORLD, &reqs[req_i]);
+            MPI_Irecv(buffer_north_r, (nx - 2) * (NZ - 2), MPI_DOUBLE, id_top, TAG, MPI_COMM_WORLD, &reqs[req_i]);
             req_i++;            
         }
 
@@ -139,7 +144,7 @@ int main(int argc, char** argv) {
 
             int index = 0;
 
-            for (int k = nx_ny; k < N - nx_ny; k += nx_ny){
+            for (int k = nx_ny; k < N_nx_ny; k += nx_ny){
 
                 for (int i = 1; i < nx - 1; i += 1){
 
@@ -149,13 +154,13 @@ int main(int argc, char** argv) {
                 }
             }
 
-            MPI_Isend(buffer_south, (nx - 2) * (NZ - 2), MPI_DOUBLE, id - s, TAG, MPI_COMM_WORLD, &reqs[req_i]);
+            MPI_Isend(buffer_south, (nx - 2) * (NZ - 2), MPI_DOUBLE, id_down, TAG, MPI_COMM_WORLD, &reqs[req_i]);
             req_i++;
 
             buffer_south_r = new double[(nx - 2) * (NZ - 2)];
 
             //принятие сообщения
-            MPI_Irecv(buffer_south_r, (nx - 2) * (NZ - 2), MPI_DOUBLE, id - s, TAG, MPI_COMM_WORLD, &reqs[req_i]);
+            MPI_Irecv(buffer_south_r, (nx - 2) * (NZ - 2), MPI_DOUBLE, id_down, TAG, MPI_COMM_WORLD, &reqs[req_i]);
             req_i++;
         }
 
@@ -166,7 +171,7 @@ int main(int argc, char** argv) {
 
             int index = 0;
 
-            for (int k = nx_ny; k < N - nx_ny; k += nx_ny){
+            for (int k = nx_ny; k < N_nx_ny; k += nx_ny){
 
                 for (int j = nx; j < nx_ny - nx; j += nx){
 
@@ -193,7 +198,7 @@ int main(int argc, char** argv) {
 
             int index = 0;
 
-            for (int k = nx_ny; k < N - nx_ny; k += nx_ny){
+            for (int k = nx_ny; k < N_nx_ny; k += nx_ny){
 
                 for (int j = nx; j < nx_ny - nx; j += nx){
 
@@ -222,7 +227,7 @@ int main(int argc, char** argv) {
 
             int index = 0;
 
-            for (int k = nx_ny; k < N - nx_ny; k += nx_ny){
+            for (int k = nx_ny; k < N_nx_ny; k += nx_ny){
 
                 for (int i = 1; i < nx - 1; i += 1){
 
@@ -237,7 +242,7 @@ int main(int argc, char** argv) {
 
             int index = 0;
 
-            for (int k = nx_ny; k < N - nx_ny; k += nx_ny){
+            for (int k = nx_ny; k < N_nx_ny; k += nx_ny){
 
                 for (int i = 1; i < nx - 1; i += 1){
 
@@ -252,7 +257,7 @@ int main(int argc, char** argv) {
 
             int index = 0;
 
-            for (int k = nx_ny; k < N - nx_ny; k += nx_ny){
+            for (int k = nx_ny; k < N_nx_ny; k += nx_ny){
 
                 for (int j = nx; j < nx_ny - nx; j += nx){
 
@@ -267,7 +272,7 @@ int main(int argc, char** argv) {
 
             int index = 0;
 
-            for (int k = nx_ny; k < N - nx_ny; k += nx_ny){
+            for (int k = nx_ny; k < N_nx_ny; k += nx_ny){
 
                 for (int j = nx; j < nx_ny - nx; j += nx){
 
@@ -326,14 +331,14 @@ int main(int argc, char** argv) {
         // Write to the file
         MyFile << NX << ' ' << NY << ' ' << NZ <<"\n"; // NX NY NZ
 
-        for (int k = nx_ny; k < N - nx_ny; k += nx_ny){
+        for (int k = nx_ny; k < N_nx_ny; k += nx_ny){
 
             for (int j = nx; j < nx_ny - nx; j += nx){
 
                for (int i = 1; i < nx - 1; i += 1){
 
                     int n = i + j + k;
-                    MyFile << cube[n] << ' ' << (id % s) * (nx - 2) + i << ' ' << (id / s) * (ny - 2) + j / nx << ' ' << k / nx_ny <<"\n"; // U i j k
+                    MyFile << cube[n] << ' ' << (id_ost_s) * (nx - 2) + i << ' ' << (id / s) * (ny - 2) + j / nx << ' ' << k / nx_ny <<"\n"; // U i j k
                     
                 }
             }
