@@ -290,13 +290,30 @@ int main(int argc, char** argv) {
     }
     else{ // принять даные по времени
 
+
+
+
+
+
+
+
+        try{
+            ofstream MyFile("time.txt");
+            MyFile << "runtime = " << search_time << " mks" <<"\n";
+            MyFile << "runtime = " << search_time/1000 << " ms" <<"\n";
+            MyFile << "runtime = " << search_time/1000000 << " s" <<"\n";
+            MyFile << "runtime = " << (double)search_time/60000000 << " min" <<"\n";
+        
+            MyFile.close();
+        }
+        catch(int cod_error){cout << "error write to " << file_name << "with error code" << cod_error;}
     }
 
-    cout << "runtime = " << search_time << " mks" << endl;
-    cout << "runtime = " << search_time/1000 << " ms" << endl;
-    cout << "runtime = " << search_time/1000000 << " s" << endl;
-    cout << "runtime = " << (double)search_time/60000000 << " min" << endl;
-    //cout << HT <<endl;
+    // cout << "runtime = " << search_time << " mks" << endl;
+    // cout << "runtime = " << search_time/1000 << " ms" << endl;
+    // cout << "runtime = " << search_time/1000000 << " s" << endl;
+    // cout << "runtime = " << (double)search_time/60000000 << " min" << endl;
+    // //cout << HT <<endl;
 
 
 
