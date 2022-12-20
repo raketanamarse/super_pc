@@ -21,7 +21,7 @@ const int TAG = 0;
 
 int main(int argc, char** argv) {
     
-    
+    int start_time = clock(); // конечное время
     int size, id;
 	MPI_Init(&argc, &argv);
 	MPI_Comm_size(MPI_COMM_WORLD, &size);
@@ -212,7 +212,10 @@ int main(int argc, char** argv) {
             MPI_Irecv(buffer_east_r, (ny - 2) * (NZ - 2), MPI_DOUBLE, id + 1, TAG, MPI_COMM_WORLD, &reqs[req_i]);
             req_i++;
         }
+
+
         
+        //█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████
         MPI_Waitall(req_size, reqs, stats);
 
         if (top == true){
@@ -277,6 +280,26 @@ int main(int argc, char** argv) {
 
     }
 
+    //█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████
+    int end_time = clock(); // конечное время
+    int search_time = end_time - start_time; // искомое время
+
+
+    if(rank != 0){ // отправка данных по времени
+
+    }
+    else{ // принять даные по времени
+
+    }
+
+    cout << "runtime = " << search_time << " mks" << endl;
+    cout << "runtime = " << search_time/1000 << " ms" << endl;
+    cout << "runtime = " << search_time/1000000 << " s" << endl;
+    cout << "runtime = " << (double)search_time/60000000 << " min" << endl;
+    //cout << HT <<endl;
+
+
+
     string file_name =  "./out_result/out_";
     file_name += to_string(id);
     file_name += ".txt";
@@ -303,13 +326,7 @@ int main(int argc, char** argv) {
     }
     catch(int cod_error){cout << "error write to " << file_name << "with error code" << cod_error;}
 
-    // int int end_time = clock(); // конечное время
-    // int int search_time = end_time - start_time; // искомое время
-    // cout << "runtime = " << search_time << " mks" << endl;
-    // cout << "runtime = " << search_time/1000 << " ms" << endl;
-    // cout << "runtime = " << search_time/1000000 << " s" << endl;
-    // cout << "runtime = " << (double)search_time/60000000 << " min" << endl;
-    // //cout << HT <<endl;
+    
     MPI_Finalize();
 }
 
