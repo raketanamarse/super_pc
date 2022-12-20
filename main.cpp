@@ -289,27 +289,31 @@ int main(int argc, char** argv) {
     int end_time = clock(); // конечное время
     int search_time = end_time - start_time; // искомое время
 
+    MPI_Status status;
 
-    if(rank == 0){ // отправка данных по времени
+    if(id == 0){ // принять данные по времени
 
+        int time = search_time;
+        int buffer_time;
+
+        for (int i = 1; i < size; i++){
+
+            MPI_Recv(&buffer_time, 1, MPI_INT, i, TAG, MPI_COMM_WORLD, &status);
+            if (buffer_time > time){
+
+                time = buffer_time;
+            }         
+        }
+        cout << "runtime = " << time << " mks" << endl;
+        cout << "runtime = " << time/1000 << " ms" << endl;
+        cout << "runtime = " << time/1000000 << " s" << endl;
+        cout << "runtime = " << (double)time/60000000 << " min" << endl;
 
 
     }
-    else{ // принять даные по времени
+    else{ // отправить даные по времени
 
-
-
-
-
-
-
-
-        cout << "runtime = " << search_time << " mks" << endl;
-        cout << "runtime = " << search_time/1000 << " ms" << endl;
-        cout << "runtime = " << search_time/1000000 << " s" << endl;
-        cout << "runtime = " << (double)search_time/60000000 << " min" << endl;
-        // //cout << HT <<endl;
-        //
+        MPI_Send(&search_time, 1, MPI_INT, 0, TAG, MPI_COMM_WORLD);
     }
 
     
@@ -319,7 +323,7 @@ int main(int argc, char** argv) {
     string file_name =  "./out_result/out_";
     file_name += to_string(id);
     file_name += ".txt";
-    cout << file_name;
+    //cout << file_name;
     try{
         ofstream MyFile(file_name);
         // Write to the file
