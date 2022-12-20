@@ -7,7 +7,7 @@ const double DSum = DX + DY + DZ; //dx + dy + dz
 
 const double DSum_PI_PI = DSum * PI * PI;
 
-double F(double x, double y, double z){
+inline double F(double x, double y, double z){
     
     return DSum_PI_PI * sin(PI * x) * sin(PI * y) * sin(PI * z);
 }
