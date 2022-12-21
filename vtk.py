@@ -4,7 +4,7 @@ import meshio
 
 size = 4 # number of out_*.txt files
 
-with open("out_0.txt") as f:
+with open("./out_result/out_0.txt") as f:
     cell = f.readline().split()
 
 
@@ -24,7 +24,7 @@ z = []
 u_an = []
     
 for j in range(0, size):
-    filename = "out_%d.txt" % j
+    filename = "./out_result/out_%d.txt" % j
     u_j = list(np.loadtxt(filename, skiprows=1)[:, 0]) # U
     x_j = list(np.loadtxt(filename, skiprows=1)[:, 1]) # X
     y_j = list(np.loadtxt(filename, skiprows=1)[:, 2]) # Y
