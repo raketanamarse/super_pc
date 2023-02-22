@@ -4,3 +4,4 @@ analytic.vtk
 numeric.vtk
 main
 out_result
+.vscode

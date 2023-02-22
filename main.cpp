@@ -1,7 +1,7 @@
 // https://github.com/raketanamarse/super_pc/
 
 //сборка и запуск mpi выполняется через команды 
-//mpic++ -o2 main.cpp -o main
+//mpic++ -O3 main.cpp -o main
 //mpiexec -n 1 main
 //вместо 1 можно указать любое количество процессоров/потоков
 
@@ -75,14 +75,15 @@ int main(int argc, char** argv) {
     memset(cube, '0', sizeof(double)*N); 
     memset(next_cube, '0', sizeof(double)*N);
 
-    double* buffer_north;
-    double* buffer_north_r;
-    double* buffer_south;
-    double* buffer_south_r;
-    double* buffer_west;
-    double* buffer_west_r;
-    double* buffer_east;
-    double* buffer_east_r;
+    //массивы для обмена данными
+    double* buffer_top;
+    double* buffer_top_r;
+    double* buffer_down;
+    double* buffer_down_r;
+    double* buffer_right;
+    double* buffer_right_r;
+    double* buffer_left;
+    double* buffer_left_r;
 
     for (int t = 1; t < NT; ++t){
 
@@ -111,10 +112,11 @@ int main(int argc, char** argv) {
 
 
 
-        //север-------------------------------------------------------------------------------------------------------------
+        //верхний сосед
         if (top == true){
 
-            buffer_north = new double[(nx - 2) * (NZ - 2)];
+            //подготовка сообщения
+            buffer_top = new double[(nx - 2) * (NZ - 2)];
 
             int index = 0;
 
@@ -123,26 +125,27 @@ int main(int argc, char** argv) {
                 for (int i = 1; i < nx - 1; i += 1){
 
                     int n = i + (nx_ny - 2 * nx) + k; //j = nx*ny - 2nx
-                    buffer_north[index] = cube[n];
+                    buffer_top[index] = cube[n];
                     ++index;
                 }
             }
 
-            MPI_Isend(buffer_north, (nx - 2) * (NZ - 2), MPI_DOUBLE, id_top, TAG, MPI_COMM_WORLD, &reqs[req_i]);
+            //отправка сообщения
+            MPI_Isend(buffer_top, (nx - 2) * (NZ - 2), MPI_DOUBLE, id_top, TAG, MPI_COMM_WORLD, &reqs[req_i]);
             req_i++;
 
 
-            buffer_north_r = new double[(nx - 2) * (NZ - 2)];
+            buffer_top_r = new double[(nx - 2) * (NZ - 2)];
             //принятие сообщения
-            MPI_Irecv(buffer_north_r, (nx - 2) * (NZ - 2), MPI_DOUBLE, id_top, TAG, MPI_COMM_WORLD, &reqs[req_i]);
+            MPI_Irecv(buffer_top_r, (nx - 2) * (NZ - 2), MPI_DOUBLE, id_top, TAG, MPI_COMM_WORLD, &reqs[req_i]);
             req_i++;            
         }
 
-        //юг----------------------------------------------------------------------------------------------------------------
+        //нижний сосед
         if (down == true){
 
-            //отправка сообщения
-            buffer_south = new double[(nx - 2) * (NZ - 2)];
+            //подготовка сообщения
+            buffer_down = new double[(nx - 2) * (NZ - 2)];
 
             int index = 0;
 
@@ -151,25 +154,27 @@ int main(int argc, char** argv) {
                 for (int i = 1; i < nx - 1; i += 1){
 
                     int n = i + (nx) + k; //j = nx
-                    buffer_south[index] = cube[n];
+                    buffer_down[index] = cube[n];
                     index++;
                 }
             }
 
-            MPI_Isend(buffer_south, (nx - 2) * (NZ - 2), MPI_DOUBLE, id_down, TAG, MPI_COMM_WORLD, &reqs[req_i]);
+            //отправка сообщения
+            MPI_Isend(buffer_down, (nx - 2) * (NZ - 2), MPI_DOUBLE, id_down, TAG, MPI_COMM_WORLD, &reqs[req_i]);
             req_i++;
 
-            buffer_south_r = new double[(nx - 2) * (NZ - 2)];
+            buffer_down_r = new double[(nx - 2) * (NZ - 2)];
 
             //принятие сообщения
-            MPI_Irecv(buffer_south_r, (nx - 2) * (NZ - 2), MPI_DOUBLE, id_down, TAG, MPI_COMM_WORLD, &reqs[req_i]);
+            MPI_Irecv(buffer_down_r, (nx - 2) * (NZ - 2), MPI_DOUBLE, id_down, TAG, MPI_COMM_WORLD, &reqs[req_i]);
             req_i++;
         }
 
-        //запад--------------------------------------------------------------------------------------------------------
+        //левый сосед
         if (left == true){
 
-            buffer_west = new double[(ny - 2) * (NZ - 2)];
+            //подготовка сообщения
+            buffer_right = new double[(ny - 2) * (NZ - 2)];
 
             int index = 0;
 
@@ -178,25 +183,27 @@ int main(int argc, char** argv) {
                 for (int j = nx; j < nx_ny - nx; j += nx){
 
                     int n = 1 + j + k; //i = 1
-                    buffer_west[index] = cube[n];
+                    buffer_right[index] = cube[n];
                     index++;
                 }
             }
 
-            MPI_Isend(buffer_west, (ny - 2) * (NZ - 2), MPI_DOUBLE, id - 1, TAG, MPI_COMM_WORLD, &reqs[req_i]);
+            //отправка сообщения
+            MPI_Isend(buffer_right, (ny - 2) * (NZ - 2), MPI_DOUBLE, id - 1, TAG, MPI_COMM_WORLD, &reqs[req_i]);
             req_i++;
 
-            buffer_west_r = new double[(ny - 2) * (NZ - 2)];
+            buffer_right_r = new double[(ny - 2) * (NZ - 2)];
 
             //принятие сообщения
-            MPI_Irecv(buffer_west_r, (ny - 2) * (NZ - 2), MPI_DOUBLE, id - 1, TAG, MPI_COMM_WORLD, &reqs[req_i]);
+            MPI_Irecv(buffer_right_r, (ny - 2) * (NZ - 2), MPI_DOUBLE, id - 1, TAG, MPI_COMM_WORLD, &reqs[req_i]);
             req_i++;
         }
 
-        //восток
+        //правый сосед
         if (right == true){
 
-            buffer_east = new double[(ny - 2) * (NZ - 2)];
+             //подготовка сообщения
+            buffer_left = new double[(ny - 2) * (NZ - 2)];
 
             int index = 0;
 
@@ -205,26 +212,27 @@ int main(int argc, char** argv) {
                 for (int j = nx; j < nx_ny - nx; j += nx){
 
                     int n = (nx - 2) + j + k; //i = nx - 2
-                    buffer_east[index] = cube[n];
+                    buffer_left[index] = cube[n];
                     index++;
                 }
             }
 
-            MPI_Isend(buffer_east, (ny - 2) * (NZ - 2), MPI_DOUBLE, id + 1, TAG, MPI_COMM_WORLD, &reqs[req_i]);
+            //отправка сообщения
+            MPI_Isend(buffer_left, (ny - 2) * (NZ - 2), MPI_DOUBLE, id + 1, TAG, MPI_COMM_WORLD, &reqs[req_i]);
             req_i++;
 
-            buffer_east_r = new double[(ny - 2) * (NZ - 2)];
+            buffer_left_r = new double[(ny - 2) * (NZ - 2)];
 
             //принятие сообщения
-            MPI_Irecv(buffer_east_r, (ny - 2) * (NZ - 2), MPI_DOUBLE, id + 1, TAG, MPI_COMM_WORLD, &reqs[req_i]);
+            MPI_Irecv(buffer_left_r, (ny - 2) * (NZ - 2), MPI_DOUBLE, id + 1, TAG, MPI_COMM_WORLD, &reqs[req_i]);
             req_i++;
         }
 
 
-        
-        //█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████
+        //ожидание окончания работы всех прцоессоров над текущим кубом
         MPI_Waitall(req_size, reqs, stats);
 
+        //обработка принятых сообщений
         if (top == true){
 
             int index = 0;
@@ -234,7 +242,7 @@ int main(int argc, char** argv) {
                 for (int i = 1; i < nx - 1; i += 1){
 
                     int n = i + (nx_ny - nx) + k; //j = nx*ny - nx
-                    cube[n] = buffer_north_r[index];
+                    cube[n] = buffer_top_r[index];
                     index++;
                 }
             }
@@ -249,7 +257,7 @@ int main(int argc, char** argv) {
                 for (int i = 1; i < nx - 1; i += 1){
 
                     int n = i + 0 + k; //j = 0
-                    cube[n] = buffer_south_r[index];
+                    cube[n] = buffer_down_r[index];
                     index++;
                 }
             }
@@ -264,7 +272,7 @@ int main(int argc, char** argv) {
                 for (int j = nx; j < nx_ny - nx; j += nx){
 
                     int n = j + k; //i = 0
-                    cube[n] = buffer_west_r[index];
+                    cube[n] = buffer_right_r[index];
                     index++;
                 }
             }
@@ -279,7 +287,7 @@ int main(int argc, char** argv) {
                 for (int j = nx; j < nx_ny - nx; j += nx){
 
                     int n = (nx - 1) + j + k; //i = nx - 1
-                    cube[n] = buffer_east_r[index];
+                    cube[n] = buffer_left_r[index];
                     index++;
                 }
             }
@@ -287,12 +295,13 @@ int main(int argc, char** argv) {
 
     }
 
-    //█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████
+    //рассчет времени работы программы на кадом из процессоров
     int end_time = clock(); // конечное время
     int search_time = end_time - start_time; // искомое время
 
     MPI_Status status;
 
+    //поиск максимального времени исполнения
     if(id == 0){ // принять данные по времени
 
         int time = search_time;
@@ -321,7 +330,7 @@ int main(int argc, char** argv) {
     
 
 
-
+    //вывод результатов в файлы (каждый процессор выводит результат в собственный файл, далее при необходимости файлы объеденяются python-скриптом)
     string file_name =  "./out_result/out_";
     file_name += to_string(id);
     file_name += ".txt";
