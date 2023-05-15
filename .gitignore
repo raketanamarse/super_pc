@@ -2,3 +2,5 @@ build
 out.txt
 analytic.vtk
 numeric.vtk
+.vscode
+out_result
